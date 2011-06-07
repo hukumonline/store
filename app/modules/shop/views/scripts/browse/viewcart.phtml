@@ -1,0 +1,14 @@
+<?
+	$cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+	include(ROOT_DIR.'/js/jcart/jcart-config.php');
+	include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=ROOT_URL;?>/js/jcart/jcart-javascript.php"></script>
+
+<div class="vcart">
+	<h5>Your Booking</h5>
+</div>
+<div class="vcart_1">
+	<?php $cart->display_cart($jcart);?>
+</div>

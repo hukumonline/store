@@ -1,0 +1,202 @@
+<?
+    $cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+    include(ROOT_DIR.'/js/jcart/jcart-config.php');
+    include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=$this->baseUrl();?>/js/jcart/jcart-javascript.php"></script>
+
+<div id="page">
+    <div class="wrapper">
+        <section class="column first">
+            <div class="colgroup">
+                <div class="kolom first" style="width: 245px;padding-right:5px;">
+					<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+					<div style="padding-top:22px;padding-right:5px">
+						<?if ($this->isLoggedIn) { ?>
+						<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+						<? } else { ?>
+						<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+						<? } ?>
+					</div>
+					<?=$this->action('terbaru','catalog','dms');?>
+                </div>
+                <div class="kolom widthcontent5">
+                	<div style="padding-top:30px"></div>
+                    <table class="checkout-progress">
+                        <tbody>
+                        <tr>
+                            <td class="shipping_inactive">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="payment_inactive">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="receipt_active">-</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <fieldset>
+                        <legend>PESANAN ANDA TELAH SELESAI</legend>
+                        <h5>Transaksi #<?=$this->invoiceNumber;?>&nbsp;&ndash;&nbsp;Tunda</h5>
+                        &raquo;&nbsp;<a href="<?=$this->baseUrl();?>/store/printPdfInvoice/orderId/<?=$this->orderId;?>" target="_blank">Print Order</a><br>
+                        <p>
+                            Tentang Order Ini:<br/>
+                            <ul>
+                                <li>Informasi Pembelian</li>
+                            </ul>
+                            <br/>
+                            Tanggal Order: <?=Pandamp_Lib_Formater::get_date($this->datePurchased);?><br/>
+                            Metode Pembayaran: <?=$this->data['payment']['method'];?>
+                        </p>
+                        <h4>DETAIL PESANAN</h4>
+                        <?//=$cart->display_shoppingcart($jcart);
+                        $jcartId = $this->cart['items'];
+                        $jcartCoupon = $this->cart['coupon'];
+
+                        $iCart = 0;
+                        $cartTotal = 0;
+                        $price = 0;
+
+                        $countCart = count($jcartId);
+
+                        if (isset($jcartCoupon))
+                        {
+                            $promo = new App_Model_Db_Table_Promotion();
+                            $rowPromo = $promo->find($jcartCoupon)->current();
+                            if (isset($rowPromo))
+                            {
+                                $disc = $rowPromo->discount;
+                            }
+                            else
+                            {
+                            ?>
+                                <div class="box box-error">Kode Promosi tidak ditemukan</div>
+                            <?
+                            }
+                        }
+
+                        ?>
+                        <table cellspacing="0" border="0" cellpadding="0" id="shopping-cart-table" class="data-table box-table shopping-cart">
+                            <thead>
+                                <tr>
+                                    <th rowspan="1" colspan="2" class="ta-left" style="padding-left:23px;border-left: 1px solid #cacaca;">Nama Produk</th>
+                                    <th class="ta-center" colspan="1">Harga</th>
+                                    <th class="ta-center" rowspan="1">Jumlah</th>
+                                    <th class="ta-center last" colspan="1">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <?
+                        $bpmCatalog = new Pandamp_Core_Hol_Catalog();
+                        for ($iCart=0;$iCart<$countCart;$iCart++)
+                        {
+						    $registry = Zend_Registry::getInstance();
+						    $config = $registry->get(Pandamp_Keys::REGISTRY_APP_OBJECT);
+						    $cdn = $config->getOption('cdn');
+						    $sDir = $cdn['static']['url']['images'];
+                            $thumb = "";
+
+                            $rowsetRelatedItem = App_Model_Show_RelatedItem::show()->getDocumentById($jcartId[$iCart]['itemId'], 'RELATED_IMAGE');
+                            $itemGuid = (isset($rowsetRelatedItem['itemGuid']))? $rowsetRelatedItem['itemGuid'] : '';
+
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg"; 	}
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif"; 	}
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png"; 	}
+
+                            if ($thumb == "") { $thumb = ""; }
+
+                            $screenshot = "<img src=\"".$thumb."\" width=\"125\" />";
+
+                        ?>
+                        <tr>
+                        <?
+                            if ($thumb == "") {
+                            ?>
+                            <td><?=$screenshot="";?></td>
+                            <?
+                            } else {
+                            ?>
+                            <td><a href=''><?=$screenshot;?></a></td>
+                            <?
+                            }
+
+                            $price = $bpmCatalog->getPrice($jcartId[$iCart]['itemId']);
+                            ?>
+                            <td class="attributes-col">
+                                <div class="title"><a href="<?=ROOT_URL;?>/berita/baca/<?=$jcartId[$iCart]['itemId'];?>/<?=$this->getCatalogShortTitle($jcartId[$iCart]['itemId']);?>" target="_blank"><?=$jcartId[$iCart]['item_name'];?></a></div>
+                            </td>
+                            <td class="ta-right">
+                                <div class="cart-price">
+                                    <span class="price">Rp <?=number_format($price,0,',','.');?></span>
+                                </div>
+                            </td>
+                            <td class="ta-center"><?=$jcartId[$iCart]['qty'];?></td>
+                            <?
+                            $total = $price * $jcartId[$iCart]['qty'];
+                            $cartTotal += $total;
+                            ?>
+                            <td class="ta-right last">
+                                <div class="cart-price">
+                                    <span class="price">Rp <?=number_format($jcartId[$iCart]['itemTotal'],0,',','.')?></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?
+                        }
+                        ?>
+
+                        </tbody>
+                        </table>
+                        <table style="border: 1px solid rgb(202, 202, 202); border-width: 0pt 1px 1px; border-style: none solid solid; border-color: -moz-use-text-color rgb(202, 202, 202) rgb(202, 202, 202); width:100%;">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="height:10px;"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" valign="top" style="width:100%;">
+                                        <div class="shopping-cart-totals">
+                                            <table id="shopping-cart-totals-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">subtotal</td>
+                                                        <td>:</td>
+                                                        <td class="ta-right" width="20%">
+                                                            <span class="price">Rp <?=number_format($cartTotal,2,',','.');?></span>
+                                                        </td>
+                                                    </tr>
+                                                    <? if (isset($disc)) { ?>
+                                                    <tr>
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">Disc</td>
+                                                        <td>:</td>
+                                                        <td class="ta-right">
+                                                            <span class="price"><?=$disc;?>%</span>
+                                                        </td>
+                                                    </tr>
+                                                    <? } ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="grand-total">
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle"><strong>grand total</strong></td>
+                                                        <td>:</td>
+                                                        <td class="ta-right">
+                                                            <strong>Rp <?=number_format($this->cart['grandTotal'],2,',','.');?></strong>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br/>
+                        <form method="get" action="<?=$this->baseUrl();?>/shop/payment/process/orderId/<?=$this->orderId;?>">
+                            <input type="submit" class="form-button" value="Lanjutkan dengan Pembayaran" />
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="clear">&nbsp;</div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </section>
+    </div>
+</div>

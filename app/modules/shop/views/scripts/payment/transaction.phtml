@@ -1,0 +1,44 @@
+<fieldset>
+<legend>SEJARAH TRANSAKSI</legend>
+<table class="display stylized" id="transactionhistory">
+<thead>
+    <tr>
+        <th>No</th>
+        <th>ID</th>
+        <th>Faktur</th>
+        <th>Metode</th>
+        <th>Tanggal</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Qty</th>
+    </tr>
+</thead>
+<tbody>
+    <?
+    $i=1;
+    foreach ($this->listOrder as $row):
+    ?>
+    <tr class="<?=($i%2 ? 'gradeX' : 'gradeC');?>" id="row_<?=$row['orderId'];?>">
+        <td><?=$i?></td>
+        <td class="center"><?=$row['orderId'];?></td>
+        <td><?=$row['invoiceNumber'];?></td>
+        <td class="ta-center"><?=$row['paymentMethod'];?></td>
+        <td class="center"><?=strftime("%d-%m-%Y", strtotime($row['datePurchased']));?></td>
+        <td><?=$row['ordersStatus'];?></td>
+        <td><?= number_format($row['orderTotal'],0,',','.');?></td>
+        <td><?=$row['countTotal'];?></td>
+    </tr>
+    <? $i++; endforeach; ?>
+</tbody>
+<tfoot>
+    <tr>
+        <th colspan="8">&nbsp;</th>
+    </tr>
+</tfoot>
+</table>
+</fieldset>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#transactionhistory").dataTable();
+});
+</script>

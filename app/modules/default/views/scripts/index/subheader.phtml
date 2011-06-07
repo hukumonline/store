@@ -1,0 +1,23 @@
+<section class="column first">
+	<div class="colgroup leading">
+		<div class="column width2 first" style="padding:5px 20px 0 5px">
+			<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+			<div style="padding-top:22px;padding-right:5px">
+			<?if ($this->isLoggedIn) { ?>
+			<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+			<? } else { ?>
+			<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+			<? } ?>
+			</div>
+			<?=$this->action('viewcart','browse','shop'); ?><br>
+			<?=$this->action('browse','manager','agenda');?>
+			<?//=$this->action('testimonial','browse','shop');?>
+		</div>
+		<div class="column width5">
+			<div class="ta-left" style="padding:10px;">
+			<h5>Ingin cari informasi hukum dengan <a href="http://www.hukumonline.com">hukumonline.com</a>. Beli buku yang berkaitan dengan hukum datang aja ke <a href="<?=ROOT_URL;?>">hukumonline checkout</a>.</h5>
+			</div>
+			<?=$this->action('view','browse','shop');?>			
+		</div>
+	</div>
+</section>

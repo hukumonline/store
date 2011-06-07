@@ -1,0 +1,22 @@
+<div id="page">
+	<div class="wrapper">
+	<section class="column first">
+		<div class="colgroup">
+			<div class="kolom first" style="width:245px;padding-right:5px;">
+				<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+				<div style="padding-top:22px;padding-right:5px">
+					<?if ($this->isLoggedIn) { ?>
+					<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+					<? } else { ?>
+					<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+					<? } ?>
+				</div>
+			
+			</div>
+			<div class="kolom widthcontent5">
+			kanan
+			</div>
+		</div>
+	</section>
+	</div>
+</div>

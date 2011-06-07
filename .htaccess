@@ -1,0 +1,55 @@
+# file png
+<FilesMatch "\.(png)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "image/png"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+# file jpg
+<FilesMatch "\.(jpg|jpeg|jpe)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "image/jpeg"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+# file gif
+<FilesMatch "\.(gif)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "image/gif"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+# file css
+<FilesMatch "\.(css)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "text/css"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+# file javascript
+<FilesMatch "\.(js)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "text/javascript"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+# file ico favicon
+<FilesMatch "\.(ico)$">
+    <IfModule mod_headers.c>
+        Header set Content-type "image/vnd.microsoft.icon"
+        Header set Cache-Control "max-age=29030400, private, proxy-revalidate"
+    </IfModule>
+</FilesMatch>
+
+#SetEnv APPLICATION_ENV development
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} \.(js|css|gif|jpg|jpeg|png|swf)$ [OR]
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^.*$ index.php [NC,L]
+
+

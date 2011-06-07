@@ -1,0 +1,11 @@
+<h5>Berita Terbaru</h5>
+<hr>
+<div class="td_peraturan1">
+    <div style="height:auto;">
+        <ul id="navlistnoline">
+            <? for($i=0; $i<$this->numberOfRows;$i++) { ?>
+            <li><span class="judul">[<?=$this->data[$i][2]; ?>]</span>&nbsp;<a href="<?=$this->baseUrl(); ?>/berita/baca/<?=$this->data[$i][3]; ?>/<?=$this->data[$i][1]; ?>" title="<?=$this->data[$i][4]; ?>"><?=$this->data[$i][0]; ?></a></li>
+            <? } ?>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<fieldset>
+    <legend>EDIT BILLING INFO</legend>
+    <form method="post">
+        <table class="no-style full">
+            <? foreach ($this->rowset as $row) : ?>
+	<input type="hidden" name="userId" value="<?=$row['userId']; ?>" >
+	<input type="hidden" name="createdDate" value="<?=$row['createdDate']; ?>" >
+	<input type="hidden" name="createdBy" value="<?=$row['createdBy']; ?>" >
+	<input type="hidden" name="modifiedDate" value="<?=$row['updatedDate']; ?>" >
+	<input type="hidden" name="modifiedBy" value="<?=$row['updatedBy']; ?>" >
+	<tr>
+            <td>NPWP</td>
+            <td><input type="text" name="taxNumber" value="<?=$row['taxNumber']; ?>" ></td>
+	</tr>
+	<tr>
+            <td>Perusahaan</td>
+            <td><input type="text" name="taxCompany" value="<?=$row['taxCompany']; ?>" ></td>
+	</tr>
+	<tr>
+            <td>Alamat</td>
+            <td><textarea name="taxAddress"><?=$row['taxAddress']; ?></textarea></td>
+	</tr>
+	<tr>
+            <td>Kota</td>
+            <td><input type="text" name="taxCity" value="<?=$row['taxCity']; ?>" ></td>
+	</tr>
+        <? $formater = new Pandamp_Lib_Form(); ?>
+	<tr>
+            <td>Propinsi</td>
+            <td><?=$formater->chooseProvince($row['taxProvince']);?></td>
+	</tr>
+	<tr>
+            <td>Kodepos</td>
+            <td><input type="text" name="taxZip" value="<?=$row['taxZip']; ?>" ></td>
+	</tr>
+	<tr>
+            <td>Telp.</td>
+            <td><input type="text" name="taxPhone" value="<?=$row['taxPhone']; ?>" ></td>
+	</tr>
+	<tr>
+            <td>Fax</td>
+            <td><input type="text" name="taxFax" value="<?=$row['taxFax']; ?>" ></td>
+	</tr>
+	<tr>
+            <td>Negara</td>
+            <td><input type="text" name="taxCountryId" value="<?=$row['taxCountryId']; ?>" ></td>
+	</tr>
+	<?php $remain =  ($row['creditLimit']) - ($this->outstandingAmount);?>
+	<tr>
+            <td>Batas Kredit</td>
+            <td><?=$row['creditLimit']?></td>
+	</tr>
+	<tr>
+            <td>Jumlah Posisi</td>
+            <td><?=$this->outstandingAmount?></td>
+	</tr>
+	<tr>
+            <td>Batas Tetap</td>
+            <td><?=$remain?></td>
+	</tr>
+	<?php ($row['isPostPaid'] == 1)?$value=$limit:$value='';?>
+	<tr>
+            <td><?=$value?></td>
+	</tr>
+	<?endforeach;?>
+	<tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" name="save" value="Simpan" class="btn btn-blue">&nbsp;<input type="reset" value="reset" class="btn btn-green"></td>
+	</tr>
+        </table>
+    </form>
+</fieldset>

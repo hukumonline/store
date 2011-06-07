@@ -1,0 +1,97 @@
+<? if ($this->aData['totalCount'] != 0) { ?>
+<table>
+</table>
+<br>
+<div id='checkoutContent'></div>
+<br>
+<table>
+    <tr>
+        <td>&nbsp;</td>
+        <td align="center"><div id='catalogPagination' class="pagination"></div></td>
+    </tr>
+</table>
+
+
+<script>
+
+$(document).ready(function(){
+
+        var isFirstTime = 1;
+
+        var myPageIndex = 0;
+
+        $("#catalogPagination").pagination(<?=$this->aData['totalCount'];?>,
+        {items_per_page:<?=$this->aData['limit'];?>, callback:handlePaginationClick, next_text:'Berikutnya',prev_text:'Sebelumnya'}
+        );
+
+        function handlePaginationClick(new_page_index, pagination_container)
+        {
+                myPageIndex = new_page_index;
+                myStart = (<?=$this->aData['limit'];?> * myPageIndex);
+
+                if(true)
+                {
+                        if($('#tblCatalogPager-'+myPageIndex).length==0)
+                        {
+                                $.getJSON('<?=$this->baseUrl();?>/shop/widgets_catalog/detail/folderGuid/<?=$this->aData['folderGuid'];?>/start/'+myStart+'/limit/<?=$this->aData['limit'];?>', '', catalogResult);
+                        }
+                        else
+                                showCatalogContent();
+                }
+                return false;
+        }
+
+        function catalogResult(res)
+        {
+                size = res.index.length;
+                var tblRow = "<form id='frmCatalogs' name='frmCatalogs'><div style='display:none'><form method='post' class='jcart'><fieldset style='border:0;'></fieldset></form></div>";
+                tblRow += "<a name='a-"+myPageIndex+"' ></a>"+'<table class="tblCatalogPager" id="tblCatalogPager-'+myPageIndex+'">';
+                for(i=0;i<size;i++)
+                {
+                        tblRow +=
+
+                                "<tr valign=top>"
+                                +"<td>"
+                                +"<h5>"+res.index[i].publish+"</h5>"
+                                +"<div class='colgroup leading'>"+res.index[i].images
+                                +"<div class='column' style='width:485px;'>"
+                                +"<a href='<?=ROOT_URL;?>/berita/baca/"+res.index[i].guid+"/"+res.index[i].shortTitle+"'><b class='big'>"+res.index[i].title+"</b></a><br/>"
+                                +"<p><q>"+res.index[i].desc+"<cite>"+res.index[i].price+"</cite></q></p>"
+                                +"<form method='post' class='jcart' id='jcart-"+res.index[i].guid+"'>"
+                                +"<div style='display:none;'>"
+                                +"<input type='hidden' name='my_item_id' value='"+res.index[i].guid+"' />"
+                                +"<input type='hidden' name='my_item_name' value='"+res.index[i].title+"' />"
+                                +"<input type='hidden' name='my_item_price' value='"+res.index[i].realprice+"' />"
+                                +"<input type='text' name='my_item_qty' value='1' size='3' />"
+                                +"</div>"
+                                +"<p style='z-index:1;overflow:hidden;'>"
+                                +"<input type='submit' name='my_add_button' value='Add to Cart' class='btn'" 
+                                +"</p>"
+                                +"</form>"
+                                +"</div>"
+                                +"</div>"
+                                +"</td>"
+                                +"</tr>";
+
+                }
+                tblRow += "</table></form>";
+                $(tblRow).appendTo("#checkoutContent");
+                showCatalogContent();
+        }
+        function showCatalogContent()
+        {
+                $('.tblCatalogPager').hide();
+                $('#tblCatalogPager-'+myPageIndex).show();
+                if(!isFirstTime)
+                        Scroller.scroll();
+                isFirstTime = 0;
+        }
+
+
+});
+
+
+
+</script>
+<? } ?>
+

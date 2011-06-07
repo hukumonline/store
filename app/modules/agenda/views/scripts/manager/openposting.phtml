@@ -1,0 +1,62 @@
+<!-- Page content -->
+<div id="page">
+    <div class="wrapper">
+        <section class="column first">
+            <div class="colgroup">
+                <div class="kolom widthcontent1 first">
+                    <?=$this->action('miniprofile','index','hol-site');?>
+                    <div id="showDiv1" style="width:100%;text-align:center;">
+                    <?=$this->action('browse','manager','agenda');?>
+                    </div>
+
+                </div>
+                <div class="kolom" style="width: 723px;border-left: 1px solid #cecece; padding-left:10px;">
+                    <h5>Hukumonline Events</h5>
+                    <hr>
+                    <table cellspadding="0" cellspacing="0" border="0" width="600" align="center">
+                    <tr>
+                            <td><span style="font-size:16px; font-family:arial, helvetica; font-weight:bold;"><?=$this->dateline; ?></span></td>
+                            <td align="right"><span style="font-size:16px; font-family:arial, helvetica; font-weight:bold"><?=$this->wday; ?></span></td>
+                    </tr>
+                    </table>
+                    <table cellspacing="0" cellpadding="0" border="0" width="600" align="center">
+                    <tr>
+                        <td bgcolor="#000000">
+                            <table cellspacing="1" cellpadding="1" border="0" width="100%">
+                            <tr>
+                                <td style="background-color:#2663E2;">
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                                    <tr>
+                                        <td width="100%"><span style="font-size:12px; font-family:arial, helvetica; color:#FFFFFF; font-weight:bold">&nbsp;<?=$this->title; ?></span></td>
+                                        <td><img src="<?=$this->cdn('images');?>/clear.gif" width="20" height="1" border="0"></td>
+                                        <td align="right" nowrap="yes"><span style="font-size:12px; font-family:arial, helvetica; color:#FFFFFF; font-weight:bold"><?=$this->timestr; ?>&nbsp;</span></td>
+                                    </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="background-color:#EDECD8">
+                                    <table cellspacing="1" cellpadding="1" border="0" width="100%">
+                                    <tr>
+                                        <td><span style="font-size:12px; font-family:arial, helvetica; color:#000000"><?=$this->body; ?></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td align="right"><span style="font-size:10px; font-family:verdana, helvetica, arial; color:#999999; font-weight:bold"><?=$this->postedby; ?></td>
+                                    </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    </table>
+
+                </div>
+                <div class="clear">&nbsp;</div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </section>
+    </div>
+</div>
+<!-- End of Page Content -->
+

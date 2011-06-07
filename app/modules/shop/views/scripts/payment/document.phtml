@@ -1,0 +1,21 @@
+<h5>.:Documents</h5>
+<table class="display stylized" id="sdocument">
+    <thead>
+        <tr>
+            <th>No.</th>
+            <th>Purchasing Date</th>
+            <th>Item Name</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? $i=1;foreach($this->rowset as $valueDetail): ?>
+        <tr class="<?=($i%2 ? 'gradeX' : 'gradeC');?>" id="row_<?=$i;?>">
+            <td><?=$i;?></td>
+            <td class="ta-center"><?=strftime("%Y-%m-%d", strtotime($valueDetail['purchasingDate'])); ?></td>
+            <td><?=$valueDetail['documentName']; ?></td>
+            <td><a href="" title="click here to download this document">download</a></td>
+        </tr>
+        <? $i++; endforeach;  ?>
+    </tbody>
+</table>

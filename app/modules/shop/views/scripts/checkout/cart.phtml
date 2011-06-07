@@ -1,0 +1,273 @@
+<?
+	$cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+	include(ROOT_DIR.'/js/jcart/jcart-config.php');
+	include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=ROOT_URL;?>/js/jcart/jcart-javascript.php"></script>
+
+<div id="page">
+	<div class="wrapper">
+		<section class="column first">
+		<div class="colgroup">
+			<div class="kolom first" style="width: 245px;padding-right:5px;">
+				<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+				<div style="padding-top:22px;padding-right:5px">
+					<?if ($this->isLoggedIn) { ?>
+					<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+					<? } else { ?>
+					<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+					<? } ?>
+				</div>
+				<?=$this->action('terbaru','catalog','dms');?>
+			</div>			
+			<div class="kolom widthcontent5">
+				<div class="vcart_1" style="padding-top:25px;">
+				<?
+                    $jcartId = $this->cart->items;
+                    $jcartProductInfo = $this->cart->iteminfo;
+                    $jcartQty = $this->cart->itemqtys;
+
+                    $iCart = 0;
+                    $cartTotal = 0;
+                    $price = 0;
+
+                    $countCart = count($jcartId);
+	        	?>
+    			<img src="<?=$this->cdn('images');?>/shopping_cart_hukumonline.png" />
+                <div style="padding-top:5px;"></div>
+                <h4>Anda mempunyai <span style='color:#EE1625;'><?=$countCart;?></span>&nbsp;barang di dalam keranjang belanja Anda</h4>
+                <p>Berbelanja di hukumonline.com adalah aman. Pesanan Anda akan diproses melalui server yang aman.</p>
+                <h5>Lihat Pesanan &raquo; <a href="<?=ROOT_URL;?>/shop/payment/list">sebelumnya</a></h5>
+                <div style="padding-top:15px;"></div>
+                <?
+                if ($_SERVER['REQUEST_METHOD'] == 'POST')
+                {
+                    $coupon = null;
+                    if (!isset($coupon) && isset($_REQUEST['coupon_code']))
+                    {
+                        $coupon=$_REQUEST['coupon_code'];
+                        $promo = new App_Model_Db_Table_Promotion();
+                        $rowPromo = $promo->find($coupon)->current();
+                        if (isset($rowPromo))
+                        {
+                            $disc = $rowPromo->discount;
+                            $this->cart->coupon = $coupon;
+                        }
+                        else
+                        {
+                        ?>
+                            <div class="box box-error">Kode Promosi tidak ditemukan</div>
+                        <?
+                        }
+                    }
+                }
+                ?>
+                <form method="post" action="<?=ROOT_URL;?>/checkout/updatePost">
+                <table cellspacing="0" border="0" cellpadding="0" id="shopping-cart-table" class="data-table box-table shopping-cart">
+                    <thead>
+                        <tr>
+                            <th rowspan="1" colspan="2" class="ta-left" style="padding-left:23px;border-left: 1px solid #cacaca;">Nama Produk</th>
+                            <th class="ta-center" colspan="1">Harga</th>
+                            <th class="ta-center" rowspan="1">Jumlah</th>
+                            <th class="ta-center last" colspan="1">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                <?
+                $bpmCatalog = new Pandamp_Core_Hol_Catalog();
+                for ($iCart=0;$iCart<$countCart;$iCart++)
+                {
+					$registry = Zend_Registry::getInstance();
+					$config = $registry->get(Pandamp_Keys::REGISTRY_APP_OBJECT);
+					$cdn = $config->getOption('cdn');
+					$sDir = $cdn['static']['url']['images'];
+                    $thumb = "";
+
+                    $rowsetRelatedItem = App_Model_Show_RelatedItem::show()->getDocumentById($jcartId[$iCart], 'RELATED_IMAGE');
+                    $itemGuid = (isset($rowsetRelatedItem['itemGuid']))? $rowsetRelatedItem['itemGuid'] : '';
+
+                    if ($itemGuid) {
+                    if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg"; 	}
+                    if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif"; 	}
+                    if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png"; 	}
+                    }
+                    
+                    if ($thumb == "") { $thumb = $this->cdn('images')."/slider/image1.jpg"; }
+
+                    $screenshot = "<img src=\"".$thumb."\" width=\"125\" />";
+
+                ?>
+                <tr>
+                <?
+                    if ($thumb == "") {
+                    ?>
+                    <td><?=$screenshot="";?></td>
+                    <?
+                    } else {
+                    ?>
+                    <td><a href=''><?=$screenshot;?></a></td>
+                    <?
+                    }
+
+                    $price = $bpmCatalog->getPrice($jcartId[$iCart]);
+                    ?>
+                    <td class="attributes-col">
+                        <div class="title"><a href="<?=ROOT_URL;?>/berita/baca/<?=$jcartId[$iCart];?>/<?=$this->getCatalogShortTitle($jcartId[$iCart]);?>" target="_blank"><?=$jcartProductInfo[$jcartId[$iCart]];?></a></div>
+                    </td>
+                    <td class="ta-right">
+                        <div class="cart-price">
+                            <span class="price">Rp <?=number_format($price,0,',','.');?></span>
+                        </div>
+                    </td>
+                    <td class="ta-center">
+                        <input type="text" name="qty" value="<?=$jcartQty[$jcartId[$iCart]];?>" style="width:30px;text-align:center;"/>
+                        <input type="hidden" name="id" value="<?=$jcartId[$iCart];?>" />
+                        <br>
+                        <button class="form-button-alt" type="submit"><img src="<?=$this->cdn('images');?>/shopping_cart_update.png"></button>
+                        <br>
+                        <a href="<?=ROOT_URL;?>/checkout/delete/id/<?=$jcartId[$iCart];?>"><img src="<?=$this->cdn('images');?>/shopping_cart_remove.png" alt="" style="margin-top: 10px;" border="0" height="14" width="61"></a>
+                    </td>
+                    <?
+                    $total = $price * $jcartQty[$jcartId[$iCart]];
+                    $cartTotal += $total;
+                    ?>
+                    <td class="ta-right last">
+                        <div class="cart-price">
+                            <span class="price">Rp <?=number_format($total,0,',','.')?></span>
+                        </div>
+                    </td>
+                </tr>
+                <?
+                }
+                ?>
+
+                </tbody>
+                </table>
+                </form>
+
+                <table style="border: 1px solid rgb(202, 202, 202); border-width: 0pt 1px 1px; border-style: none solid solid; border-color: -moz-use-text-color rgb(202, 202, 202) rgb(202, 202, 202); width:100%;">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="height:10px;"></td>
+                        </tr>
+                        <tr>
+                            <td valign="top" style="padding:0px 0px 0px 10px;">
+                                <div class="shopping-cart-collaterals">
+                                    <div class="discount-codes boxs">
+                                        <form method="post" action="<?=ROOT_URL;?>/checkout/cart">
+                                            <h5>Kode Promosi</h5><p>[optional]</p>
+                                            <div class="align-left" style="padding-bottom:5px;">
+                                                <input type="text" name="coupon_code" value="<?=(isset($coupon))?$coupon:'';?>" />
+                                            </div>
+                                            <div class="align-left" style="z-index:1;overflow:hidden;">
+                                                &nbsp;<input type="submit" value="Apply Coupon" class="form-button-alt"/>
+                                            </div>
+                                            <div class="clean"></div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                            <td valign="top" style="width:100%;">
+                                <div class="shopping-cart-totals">
+                                    <table id="shopping-cart-totals-table">
+                                        <tbody>
+                                            <tr>
+                                                <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">subtotal</td>
+                                                <td>:</td>
+                                                <td class="ta-right">
+                                                    <span class="price">Rp <?=number_format($cartTotal,2,',','.');?></span>
+                                                </td>
+                                            </tr>
+                                            <? if (isset($disc)) { ?>
+                                            <tr>
+                                                <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">Disc</td>
+                                                <td>:</td>
+                                                <td class="ta-right">
+                                                    <span class="price"><?=$disc;?>%</span>
+                                                </td>
+                                            </tr>
+                                            <? } ?>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr class="grand-total">
+                                                <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle"><strong>grand total</strong></td>
+                                                <td>:</td>
+                                                <? if (isset($disc)) {
+                                                   $grandTotal = ($cartTotal - ($disc/100 * $cartTotal));
+                                                }
+                                                else
+                                                {
+                                                    $grandTotal = $cartTotal;
+                                                }
+                                                ?>
+                                                <td class="ta-right">
+                                                    <strong>Rp <?=number_format($grandTotal,2,',','.');?></strong>
+                                                </td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">
+                                <button type="button" onclick="window.location.href='<?=ROOT_URL;?>'" class="btn btn-green big" style="margin-left:10px;">Continue Shopping</button>
+                            </td>
+                            <td valign="top" style="padding-left:17em;white-space:nowrap !important;">
+                                <button type="button" onclick="window.location.href='<?=ROOT_URL;?>/store/dropshipping'" class="btn btn-blue big">Proceed to Checkout</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="ta-right" style="padding: 30px 10px 10px 10px;">
+                                <div style="margin-bottom: 20px;">
+                                    <a href="#termsandpolicy" class="nyroModal">Syarat dan Ketentuan</a> |
+                                    <a href="#privasi" class="nyroModal">Kebijakan Privasi</a>
+                                </div>
+                                <div style="font-weight: bold; margin-bottom: 8px;">
+                                    Ada pertanyaan? Pilih order melalui telepon atau faks?<br>Hubungi kami di 0800-140-7890 dan kami akan dengan senang hati membantu Anda
+                                </div>
+                                atau <a href="mailto:layanan@hukumonline.com">Email tim layanan hukumonline.com</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    			
+				</div>
+			</div>
+		</div>
+		</section>
+        <div id="termsandpolicy" style="display:none;">
+			<div id="judul"><a href="<?=ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
+			<div class="align-left">
+			<small>Buat Akun HukumonlineID</small>
+			</div>
+			<div class="align-right">
+			    <a href="http://www.hukumonline.com">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://www.hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
+			</div>
+			<div class="clear">&nbsp;</div>
+			<hr>
+			<div style="padding:15px">
+            <h2><?=$this->title;?></h2>
+            <div class="subjudul"><?=$this->subTitle; ?></div>
+            <p><?=$this->content; ?></p>
+            </div>
+        </div>
+        <div id="privasi" style="display:none;">
+			<div id="judul"><a href="<?=ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
+			<div class="align-left">
+			<small>Buat Akun HukumonlineID</small>
+			</div>
+			<div class="align-right">
+			    <a href="http://www.hukumonline.com">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://www.hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
+			</div>
+			<div class="clear">&nbsp;</div>
+			<hr>
+			<div style="padding:15px">
+            <h2><?=$this->tp;?></h2>
+            <div class="subjudul"><?=$this->sp; ?></div>
+            <p><?=$this->cp; ?></p>
+            </div>
+        </div>
+	</div>
+</div>

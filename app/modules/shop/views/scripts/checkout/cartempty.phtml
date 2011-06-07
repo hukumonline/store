@@ -1,0 +1,38 @@
+<?
+	$cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+	include(ROOT_DIR.'/js/jcart/jcart-config.php');
+	include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=ROOT_URL;?>/js/jcart/jcart-javascript.php"></script>
+
+<div id="page">
+    <div class="wrapper">
+        <section class="column first">
+            <div class="colgroup">
+                <div class="kolom first" style="width: 245px;padding-right:5px;border-right: 1px solid #cecece; ">
+					<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+					<div style="padding-top:22px;padding-right:5px">
+						<?if ($this->isLoggedIn) { ?>
+						<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+						<? } else { ?>
+						<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+						<? } ?>
+					</div>
+					<?=$this->action('terbaru','catalog','dms');?>
+                </div>
+                <div class="kolom widthcontent5">
+                    <img src="<?=$this->cdn('images');?>/shopping_cart_hukumonline.png" />
+                    <div style="padding-top:5px;"></div>
+                    <h5>Lihat Pesanan &raquo; <a href="<?=ROOT_URL;?>/shop/payment/list">sebelumnya</a></h5>
+                    <div style="padding-top:15px;"></div>
+                    <div class="box box-info">
+                        Keranjang Belanja Anda Kosong
+                    </div>
+                </div>
+                <div class="clear">&nbsp;</div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </section>
+    </div>
+</div>

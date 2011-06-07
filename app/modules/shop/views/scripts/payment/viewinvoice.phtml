@@ -1,0 +1,131 @@
+<h4>LIHAT FAKTUR</h4>
+<hr><br/>
+<table class="stylized">
+	<tr>
+		<td>Nomer:</td>
+		<td><?=$this->invoiceNumber;?></td>
+	</tr>
+	<tr>
+		<td>Tanggal:</td>
+		<td><?=$this->datePurchased;?></td>
+	</tr>
+</table>
+<fieldset>
+	<legend>INFORMASI TAGIHAN</legend>
+	<p>
+		<strong>NPWP</strong>
+		<br>
+		<?=($this->data['taxNumber'])?$this->data['taxNumber']:'-';?>
+	</p>
+	<p>
+		<strong>Nama Perusahaan</strong>
+		<br>
+		<?=($this->data['taxCompany'])?$this->data['taxCompany']:'-';?>
+	</p>
+	<p>
+		<strong>Alamat</strong>
+		<br>
+		<?=($this->data['taxAddress'])?$this->data['taxAddress']:'-';?>
+	</p>
+	<p>
+		<strong>Kota</strong>
+		<br>
+		<?=($this->data['taxCity'])?$this->data['taxCity']:'-';?>
+	</p>
+	<p>
+		<strong>Kodepos</strong>
+		<br>
+		<?=($this->data['taxZip'])?$this->data['taxZip']:'-';?>
+	</p>
+	<p>
+		<strong>Propinsi</strong>
+		<br>
+		<?
+		$modelState = new App_Model_Db_Table_State();
+		$rowState = $modelState->find($this->data['taxProvince'])->current();
+		if ($rowState)
+		{
+			echo $rowState->pname;
+		}
+		else 
+		{
+			echo "-";
+		}
+		?>
+	</p>
+	<p>
+		<strong>Negara</strong>
+		<br>
+		<?
+		$config = new Zend_Config_Xml(CONFIG_PATH.'/countries.xml','countries');
+		$aCountries = array();
+		foreach($config->get('country') as $country)
+		{
+			if ($country->alpha2 == $this->data['taxCountry']) {
+				$arr = $country->name;
+			}
+		}
+		echo $arr;
+		?>
+	</p>
+</fieldset>
+<fieldset>
+<legend>DETAIL PESANAN</legend>
+<table class="stylized">
+<thead>
+<tr>
+	<th>Produk</th>
+	<th>Harga</th>
+	<th>Jumlah</th>
+	<th>Total</th>
+</tr>
+</thead>
+<tbody>
+	<?
+		//$bpmCatalog = new Kutu_Core_Hol_Catalog();
+		$jcartId = $this->cart['items'];
+
+		$iCart = 0;
+		$cartTotal = 0;
+		$price = 0;
+		for($iCart=0;$iCart<count($jcartId);$iCart++)
+		{
+			//$price = $bpmCatalog->getPrice($jcartId[$iCart]['itemId']);
+			//$cartTotal += $price;
+			$cartTotal += $jcartId[$iCart]['itemPrice'];
+	?>
+
+	<tr>
+		<td>
+			<strong><?=$jcartId[$iCart]['item_name'];?></strong>
+			<br>
+			<?=App_Model_Show_CatalogAttribute::show()->getCatalogAttributeValue($jcartId[$iCart]['itemId'],'fixedSubTitle');?>
+			<br>&nbsp;
+		</td>
+		<td>Rp. <?=number_format($jcartId[$iCart]['itemPrice'],2);?></td>
+		<td><?=$jcartId[$iCart]['qty'];?></td>
+		<td>Rp. <?=number_format($jcartId[$iCart]['itemPrice']*$jcartId[$iCart]['qty'],2);?></td>
+	</tr>
+	<?	}?>
+	<tr>
+		<td colspan="2"></td>
+		<td><strong>Total (harga + diskon + PPN 10%)</strong></td>
+		<td>Rp. <?=number_format($cartTotal,2);?></td>
+	</tr>
+</tbody>
+</table>
+
+</fieldset>
+<fieldset>
+<legend>PILIH METODE PEMBAYARAN:</legend>
+	<form method="get" action="<?=ROOT_URL;?>/shop/payment/process/orderId/<?=$this->orderId;?>">
+		<select name="method" id="method" style="width:200px;">
+			<option value="nsiapay" <?php if($this->data['paymentMethod']=='nsiapay') echo 'selected'?> >Nsiapay
+			<!--<option value="paypal" <?php if($this->data['paymentMethod']=='paypal') echo 'selected'?> >Paypal
+			<option value="postpaid" <?php if($this->data['paymentMethod']=='postpaid') echo 'selected'?>>Postpaid-->
+			<option value="bank" <?php if($this->data['paymentMethod']=='bank') echo 'selected'?>>Bank Transfer
+		</select>
+		<input type="submit" value="Lanjutkan dengan Pembayaran" class="btn" />
+	</form>
+
+</fieldset>

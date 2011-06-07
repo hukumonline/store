@@ -1,0 +1,170 @@
+<script>
+    function showResults() {
+         var resultMsg1=0
+         var resultMsg2=0
+         var invdiv ='';
+         <?
+         foreach($this->rowset as $value){
+            $arr1[] = $value['orderTotal'];
+            $arr2[] = $value['currencyValue'];
+            $inv[]  = $value['orderId'].'/'.$value['orderTotal'].'/'.$value['countTotal'];
+         }
+         ?>
+        <? 
+            for($i=0;$i<count($arr1);$i++){
+        ?>
+                if(!document.payconfirm.orderId[<?=$i;?>])
+                {
+                    if(document.payconfirm.orderId.checked){
+                        resultMsg1+=parseFloat(<?=($arr1[$i]);?>)
+                        resultMsg2+=parseFloat(<?=($arr2[$i]*$arr1[$i]);?>)
+                        invdiv+="<?=$inv[$i];?>\n"
+                    }
+                }
+                else
+                {
+                    if(document.payconfirm.orderId[<?=$i;?>].checked){
+                         resultMsg1+=parseFloat(<?=($arr1[$i]);?>)
+                         resultMsg2+=parseFloat(<?=($arr2[$i]*$arr1[$i]);?>)
+                         invdiv+="<?=$inv[$i];?>\n"
+                     }
+                }
+            <?}?>
+         //document.getElementById('amountid').innerHTML=resultMsg2
+         //document.getElementById('amountus').innerHTML=resultMsg1
+         document.getElementById('amount').value=resultMsg1
+         document.getElementById('invoicex').innerHTML=invdiv
+    }
+
+</script>
+<h5>KONFIRMASI PEMBAYARAN</h5>
+<p>
+    <b><?=$this->numCount;?> data transaksi yang belum terbayar.</b>
+</p>
+<p>
+Anda harus mengisi konfirmasi pembayaran ini setiap anda melakukan pembayaran, baik melalui setor tunai, atm, internet banking ataupun transfer antar bank. Kesalahan pengisian konfirmasi pembayaran dapat mengakibatkan tertundanya proses pesanan anda.
+</p>
+<br/>
+<?if(!empty($this->sended)):?>
+<div class="box box-info">
+    <?=$this->sended?>
+</div>
+<?endif;?>
+<form name="payconfirm" id="payconfirm" method="post" action="payconfirm">
+<table class="display stylized" id="confirm">
+<thead>
+    <tr>
+        <th>No</th>
+        <th>OrderID</th>
+        <th>No.Faktur</th>
+        <th>Metode</th>
+        <th>Tanggal</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Qty</th>
+        <th class="ta-center">Aksi</th>
+    </tr>
+</thead>
+<tbody>
+    <?
+    $i=1;
+    foreach ($this->rowset as $row):
+    ?>
+    <tr class="<?=($i%2 ? 'gradeX' : 'gradeC');?>" id="row_<?=$row['orderId'];?>">
+        <td><?=$i?></td>
+        <td class="center"><?=$row['orderId'];?></td>
+        <td><?=$row['invoiceNumber'];?></td>
+        <td class="ta-center"><?=$row['paymentMethod'];?></td>
+        <td class="center"><?=strftime("%d-%m-%Y", strtotime($row['datePurchased']));?></td>
+        <td><?=$row['ordersStatus'];?></td>
+        <td><?=  number_format($row['orderTotal'],0,',','.');?></td>
+        <td><?=$row['countTotal'];?></td>
+        <td>
+            <? if($row['orderStatus'] == 4){ ?>
+            <input type="checkbox" id="orderId" name="orderId[<?=$i?>]" disabled="disabled">
+            <? } else { ?>
+            <input type="checkbox" id="orderId" name="orderId[]" value="<?=$row['orderId']?>" onClick="showResults();">
+            <? } ?>
+        </td>
+    </tr>
+    <? $i++; endforeach; ?>
+</tbody>
+<tfoot>
+<tr>
+	<td colspan="9">&nbsp;</td>
+</tr>
+</tfoot>
+</table>
+<h6>.::Silahkan Pilih Transaksi Anda dengan Mencentang kotak pada kolom aksi diatas::.</h6>
+<br>
+    <table class="no-style full">
+        <tr>
+            <td>No.Pesanan/Total/Jumlah *</td>
+            <td><textarea id="invoicex" name="invoicex" onFocus="blur();">&nbsp;</textarea></td>
+        </tr>
+	<tr>
+            <td>Metode Pembayaran</td>
+            <td>
+            <select name="paymentMethod">
+                <option value="atm transfer">ATM Transfer
+                <option value="cash bank">Cash Bank
+                <option value="transfer">Transfer
+                <option value="internet banking">Internet Banking
+            </select>
+            </td>
+	</tr>
+	<tr>
+            <td>Bank Tujuan</td>
+            <td>
+	    <select name="destinationAccount">
+	        <? foreach($this->bankAccount as $destAccount){
+	            $acc = explode("|", $destAccount->settingValue);
+	        }
+	        foreach($acc as $accN ){
+	        ?>
+	        <option value="<?=$accN?>"><?=$accN?>
+	        <?}?>
+	    </select>
+            </td>
+	</tr>
+	<tr>
+            <td>Tanggal Pembayaran</td>
+            <td><input type="date" name="paymentDate" id="paymentDate" value="<?=date('Y-m-d');?>"></td>
+	</tr>
+	<tr>
+            <td>Jumlah Pembayaran *</td>
+            <td><input type="text" name="amount" id="amount"></td>
+	</tr>
+	<tr>
+		<td>No. Rekening *</td>
+		<td><input type="text" name="senderAccount" id="senderAccount"></td>
+	</tr>
+	<tr>
+            <td>Nama Rekening *</td>
+            <td><input type="text" name="senderAccountName" id="senderAccountName"></td>
+	</tr>
+	<tr>
+            <td>Dari Bank *</td>
+            <td><input type="text" name="bankName" id="bankName"></td>
+	</tr>
+	<tr>
+            <td>Catatan</td>
+            <td><textarea name="note"></textarea></td>
+	</tr>
+	<tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" class="btn btn-blue" value="Kirim Pesan"/></td>
+	</tr>
+    </table>
+</form>
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#payconfirm").validate({
+		rules:{
+			senderAccount:"required"
+			,senderAccountName:"required"
+			,bankName:"required"
+		}
+	});
+});
+</script>

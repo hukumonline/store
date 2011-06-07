@@ -1,0 +1,121 @@
+<?
+    $cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+    include(ROOT_DIR.'/js/jcart/jcart-config.php');
+    include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=$this->baseUrl();?>/js/jcart/jcart-javascript.php"></script>
+
+<div id="page">
+    <div class="wrapper">
+        <section class="column first">
+            <div class="colgroup">
+                <div class="kolom first" style="width: 245px;padding-right:5px;">
+					<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+					<div style="padding-top:22px;padding-right:5px">
+						<?if ($this->isLoggedIn) { ?>
+						<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+						<? } else { ?>
+						<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+						<? } ?>
+					</div>
+					<?=$this->action('terbaru','catalog','dms');?>
+                </div>
+                <div class="kolom sw1">
+                	<div style="padding-top:30px;"></div>
+                    <table class="checkout-progress">
+                        <tbody>
+                        <tr>
+                            <td class="shipping_active">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="payment_inactive">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="receipt_inactive">-</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <fieldset>
+                        <legend>MEMBUAT ALAMAT PENGIRIMAN</legend>
+                        <div class="ta-right"><label class="required">Field Diperlukan</label></div>
+                        <form id="form-validate" method="post" action="<?=$this->baseUrl();?>/store/confirmorder">
+                            <p>
+                                <label class="required" for="fullName">Nama Lengkap</label><br/>
+                                <input type="text" id="fullName" class="half" name="fullName" value="<?=$this->userDetailInfo->fullName;?>"/>
+                            </p>
+                            <p>
+                                <label class="required" for="company">Perusahaan</label><br/>
+                                <input type="text" id="company" class="half" name="company" value="<?=$this->userDetailInfo->company;?>"/>
+                            </p>
+                            <p>
+                                <label class="required" for="phone">Telp</label><br/>
+                                <input type="text" id="phone" class="small" name="phone" value="<?=$this->userDetailInfo->phone;?>"/>
+                            </p>
+                            <p>
+                                <label for="fax">Fax</label><br/>
+                                <input type="text" id="fax" class="small" name="fax" value="<?=$this->userDetailInfo->fax;?>"/>
+                            </p>
+                            <p>
+                                <label class="required" for="address">Alamat</label><br/>
+                                <textarea id="address" class="small" name="address"><?=$this->userDetailInfo->address;?></textarea>
+                            </p>
+                            <? $formater = new Pandamp_Lib_Form(); ?>
+                            <p>
+                                <label class="required" for="province">Propinsi</label>
+                                <span style="padding-left:167px;">
+                                    <label for="postalcode">Kota</label>
+                                </span>
+                                <br/>
+                                <?=$formater->chooseProvince($this->userDetailInfo->state);?>
+                                <span style="padding-left:20px;">
+                                    <input type="text" id="city" class="small" name="city" value="<?=$this->userDetailInfo->city;?>"/>
+                                </span>
+                            </p>
+                            <p>
+                                <label class="required" for="postalcode">Kode Pos</label><br/>
+                                <input type="text" id="postalcode" class="small" name="postalcode" value="<?=$this->userDetailInfo->zip;?>"/>
+                            </p>
+                            <p class="box"><input type="button" onclick="window.location.href='<?=$this->baseUrl();?>/checkout/cart'" class="btn" value="&laquo;&nbsp;Kembali"/> or <input type="submit" class="btn btn-green big" value="Simpan Alamat"/></p>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="clear">&nbsp;</div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </section>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	var validator = $("#form-validate").validate({
+        rules:{
+            fullName:"required"
+            ,company:"required"
+            ,phone:"required"
+            ,address:"required"
+            ,province:"required"
+            ,postalcode:{
+                required:true,
+                digits:true
+            }
+        }
+        ,messages:{
+            fullName:"Masukkan Nama Lengkap"
+            ,company:"Masukkan Nama Perusahaan"
+            ,phone:"Masukkan Nomer Telepon"
+            ,address:"Masukkan Alamat Lengkap"
+            ,province:"Pilih propinsi"
+            ,postalcode:{
+                required:"Masukkan KodePos"
+                ,digits:"Masukkan Hanya Angka"
+            }
+        }
+        ,errorPlacement: function(error, element) {
+            error.insertAfter(element.parent().find('label:first'));
+        }
+        ,success: function(label){
+            label.html("&nbsp;").addClass("ok");
+        }
+		
+	});	
+});
+</script>

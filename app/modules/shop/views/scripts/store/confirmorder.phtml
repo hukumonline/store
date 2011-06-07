@@ -1,0 +1,303 @@
+<?
+    $cart =& $_SESSION['jCart']; if(!is_object($cart)) $cart = new jCart();
+    include(ROOT_DIR.'/js/jcart/jcart-config.php');
+    include(ROOT_DIR.'/js/jcart/jcart-defaults.php');
+?>
+
+<script type="text/javascript" src="<?=$this->baseUrl();?>/js/jcart/jcart-javascript.php"></script>
+
+<div id="page">
+    <div class="wrapper">
+        <section class="column first">
+            <div class="colgroup">
+                <div class="kolom first" style="width: 245px;padding-right:5px;">
+					<a href="/"><img src="<?=$this->cdn('images');?>/logo-store.gif" width="250px"></a>
+					<div style="padding-top:22px;padding-right:5px">
+						<?if ($this->isLoggedIn) { ?>
+						<h6><?=$this->username; ?> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->profile;?>';return false;">Profile</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->logoutUrl;?>';return false;">logout</a></h6>
+						<? } else { ?>
+						<h6><a href="#" onclick="window.location='<?=$this->signUp;?>';return false;">Daftar</a> &nbsp;|&nbsp; <a href="#" onclick="window.location='<?=$this->loginUrl;?>';return false;">Masuk</a></h6>
+						<? } ?>
+					</div>
+					<?=$this->action('terbaru','catalog','dms');?>
+                </div>
+                <div class="kolom widthcontent5">
+                	<div style="padding-top:35px;"></div>
+                    <table class="checkout-progress">
+                        <tbody>
+                        <tr>
+                            <td class="shipping_inactive">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="payment_active">-</td>
+                            <td class="steps_arrow"></td>
+                            <td class="receipt_inactive">-</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <fieldset>
+                        <legend>PILIH METODE PEMBAYARAN ANDA</legend>
+                        <?//=$cart->display_shoppingcart($jcart);
+                        $jcartId = $this->cart->items;
+                        $jcartProductInfo = $this->cart->iteminfo;
+                        $jcartQty = $this->cart->itemqtys;
+                        $jcartCoupon = (isset($this->cart->coupon))?$this->cart->coupon:'';
+
+                        $iCart = 0;
+                        $cartTotal = 0;
+                        $price = 0;
+
+                        $countCart = count($jcartId);
+
+                        if (isset($jcartCoupon))
+                        {
+                            $promo = new App_Model_Db_Table_Promotion();
+                            $rowPromo = $promo->find($jcartCoupon)->current();
+                            if (isset($rowPromo))
+                            {
+                                $disc = $rowPromo->discount;
+                            }
+                            else
+                            {
+                            ?>
+                        		<div class="box box-error">Kode Promosi tidak ditemukan</div>
+                            	
+                            <?
+                            }
+                        }
+
+                        ?>
+                        <form method="post" action="<?=$this->baseUrl();?>/store/completeorder">
+                            <dl class="payment-methods">
+                                <dt>
+                                    <input id="p_method_nsiapay" value="nsiapay" type="radio" name="payment[method]" title="Credit Card" class="radio" CHECKED />
+                                    <label for="p_method_nsiapay">Credit Card</label>
+                                </dt>
+                                <dt>
+                                    <input id="p_method_bankpayment" value="bank" type="radio" name="payment[method]" title="Bank / ATM Transfer" class="radio" />
+                                    <label for="p_method_bankpayment">Bank / ATM Transfer</label>
+                                </dt>
+                                <dt>
+                                    <input id="p_method_postpaid" value="postpaid" type="radio" name="payment[method]" title="Postpaid" class="radio"/>
+                                    <label for="p_method_postpaid">Postpaid</label>
+                                </dt>
+                                <dd>
+                                    <fieldset class="form-list">
+                                        <ul id="payment_form_nsiapay">
+                                            <li style="margin-top:30px;">
+                                                You will be redirected to the NSIAPAY website when you place an order.
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </dd>
+                                <dd>
+                                    <fieldset class="form-list">
+                                        <ul id="payment_form_bankpayment" style="display:none;">
+                                            <li>
+                                                <div class="input-box">
+                                                    <div id="bank_logo">
+                                                        <div class="bank_logo_radio">
+                                                            <input type="radio" name="payment[bank_options]" value="BCA" CHECKED >
+                                                        </div>
+                                                        <div class="bank_logo_image">
+                                                            <img src="<?=$this->cdn('images');?>/bank_logo_bca.jpg" border="0" alt="Bank BCA">
+                                                        </div>
+                                                        <div class="bank_logo_text">
+                                                            Account Name : PT Justika Siar Publika <br/>
+                                                            Account Number : 221-3028-707
+                                                        </div>
+                                                    </div>
+                                                    <div id="bank_logo">
+                                                        <div class="bank_logo_radio">
+                                                            <input type="radio" name="payment[bank_options]" value="BNI">
+                                                        </div>
+                                                        <div class="bank_logo_image">
+                                                            <img src="<?=$this->cdn('images');?>/bank_logo_bni.jpg" border="0" alt="Bank BCA">
+                                                        </div>
+                                                        <div class="bank_logo_text">
+                                                            Account Name : PT Justika Siar Publika <br/>
+                                                            Account Number : 0073957339
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </dd>
+                                <dd>
+                                    <fieldset class="form-list">
+                                        <ul id="payment_form_postpaid" style="display:none;">
+                                            <li style="margin-top:30px;">
+                                                Limit Credit Card: ...
+                                            </li>
+                                        </ul>
+                                    </fieldset>
+                                </dd>
+                            </dl>
+                        <table cellspacing="0" border="0" cellpadding="0" id="shopping-cart-table" class="data-table box-table shopping-cart">
+                            <thead>
+                                <tr>
+                                    <th rowspan="1" colspan="2" class="ta-left" style="padding-left:23px;border-left: 1px solid #cacaca;">Nama Produk</th>
+                                    <th class="ta-center" colspan="1">Harga</th>
+                                    <th class="ta-center" rowspan="1">Jumlah</th>
+                                    <th class="ta-center last" colspan="1">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        <?
+                        $bpmCatalog = new Pandamp_Core_Hol_Catalog();
+                        for ($iCart=0;$iCart<$countCart;$iCart++)
+                        {
+						    $registry = Zend_Registry::getInstance();
+						    $config = $registry->get(Pandamp_Keys::REGISTRY_APP_OBJECT);
+						    $cdn = $config->getOption('cdn');
+						    $sDir = $cdn['static']['url']['images'];
+                            $thumb = "";
+
+                            $rowsetRelatedItem = App_Model_Show_RelatedItem::show()->getDocumentById($jcartId[$iCart], 'RELATED_IMAGE');
+                            $itemGuid = (isset($rowsetRelatedItem['itemGuid']))? $rowsetRelatedItem['itemGuid'] : '';
+
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".jpg"; 	}
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".gif"; 	}
+                            if (Pandamp_Lib_Formater::thumb_exists($sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png")) 	{ $thumb = $sDir ."/". $rowsetRelatedItem['relatedGuid'] . "/" . $itemGuid . ".png"; 	}
+
+                            if ($thumb == "") { $thumb = ""; }
+
+                            $screenshot = "<img src=\"".$thumb."\" width=\"125\" />";
+
+                        ?>
+                        <tr>
+                        <?
+                            if ($thumb == "") {
+                            ?>
+                            <td><?=$screenshot="";?></td>
+                            <?
+                            } else {
+                            ?>
+                            <td><a href=''><?=$screenshot;?></a></td>
+                            <?
+                            }
+
+                            $price = $bpmCatalog->getPrice($jcartId[$iCart]);
+                            ?>
+                            <td class="attributes-col">
+                                <div class="title"><a href="<?=ROOT_URL;?>/berita/baca/<?=$jcartId[$iCart];?>/<?=$this->getCatalogShortTitle($jcartId[$iCart]);?>" target="_blank"><?=$jcartProductInfo[$jcartId[$iCart]];?></a></div>
+                            </td>
+                            <td class="ta-right">
+                                <div class="cart-price">
+                                    <span class="price">Rp <?=number_format($price,0,',','.');?></span>
+                                </div>
+                            </td>
+                            <td class="ta-center"><?=$jcartQty[$jcartId[$iCart]];?></td>
+                            <?
+                            $total = $price * $jcartQty[$jcartId[$iCart]];
+                            $cartTotal += $total;
+                            ?>
+                            <td class="ta-right last">
+                                <div class="cart-price">
+                                    <span class="price">Rp <?=number_format($total,0,',','.')?></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?
+                        }
+                        ?>
+
+                        </tbody>
+                        </table>
+                        <table style="border: 1px solid rgb(202, 202, 202); border-width: 0pt 1px 1px; border-style: none solid solid; border-color: -moz-use-text-color rgb(202, 202, 202) rgb(202, 202, 202); width:100%;">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="height:10px;"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" valign="top" style="width:100%;">
+                                        <div class="shopping-cart-totals">
+                                            <table id="shopping-cart-totals-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">subtotal</td>
+                                                        <td>:</td>
+                                                        <td class="ta-right" width="20%">
+                                                            <span class="price">Rp <?=number_format($cartTotal,2,',','.');?></span>
+                                                        </td>
+                                                    </tr>
+                                                    <? if (isset($disc)) { ?>
+                                                    <tr>
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle">Disc</td>
+                                                        <td>:</td>
+                                                        <td class="ta-right">
+                                                            <span class="price"><?=$disc;?>%</span>
+                                                        </td>
+                                                    </tr>
+                                                    <? } ?>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="grand-total">
+                                                        <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle"><strong>grand total</strong></td>
+                                                        <td>:</td>
+                                                        <? if (isset($disc)) {
+                                                           $grandTotal = ($cartTotal - ($disc/100 * $cartTotal));
+                                                        }
+                                                        else
+                                                        {
+                                                            $grandTotal = $cartTotal;
+                                                        }
+                                                        ?>
+                                                        <td class="ta-right">
+                                                            <strong>Rp <?=number_format($grandTotal,2,',','.');?></strong>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                                <br/>
+                                <fieldset>
+                                    <legend>Harap verifikasi item yang anda beli, biaya total dan lengkapi pesanan anda.</legend>
+                            <input type="hidden"  name="taxCompany" value="<?=$this->data['company']; ?>">
+                            <input type="hidden"  name="taxAddress" value="<?=$this->data['address']; ?>">
+                            <input type="hidden"  name="taxCity" value="<?=$this->data['city']; ?>">
+                            <input type="hidden"  name="taxZip" value="<?=$this->data['postalcode']; ?>">
+                            <input type="hidden"  name="taxProvince" value="<?=$this->data['province']; ?>">
+                            <div style="padding-top: 15px;">
+                                <input type="button" onclick="javascript:history.back();" class="form-button" value="&laquo;&nbsp;Kembali ke Informasi Pengiriman">&nbsp;&nbsp;<input type="submit" class="form-button" value="Complete Order">
+                            </div>
+                            </fieldset>
+                        </form>
+                    </fieldset>
+                </div>
+                <div class="clear">&nbsp;</div>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </section>
+    </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+   $(".radio").click(function(){
+       if ($(this).val() === "nsiapay")
+           {
+               $("#payment_form_nsiapay").show("fast");
+               $("#payment_form_bankpayment").hide("fast");
+               $("#payment_form_postpaid").hide("fast");
+           }
+           else if ($(this).val() === "bank")
+               {
+                   $("#payment_form_nsiapay").hide("fast");
+                   $("#payment_form_postpaid").hide("fast");
+                   $("#payment_form_bankpayment").show("fast");
+               }
+               else if ($(this).val() === "postpaid")
+                   {
+                       $("#payment_form_nsiapay").hide("fast");
+                       $("#payment_form_postpaid").show("fast");
+                       $("#payment_form_bankpayment").hide("fast");
+                   }
+   }
+   );
+		
+});
+</script>
