@@ -1,5 +1,6 @@
 .settings/
 app/configs/
+data/
 library/Phpids/
 library/adodb/
 library/phpgacl/
