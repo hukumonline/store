@@ -1,4 +1,0 @@
-AuthUserFile C:\xampp\htdocs\holemp\mix_lib\phpgacl\a4m1n\.htpasswd
-AuthType Basic
-AuthName "Admin Access"
-Require valid-user

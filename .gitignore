@@ -1,1 +1,7 @@
+.settings/
 app/configs/
+library/Phpids/
+library/adodb/
+library/phpgacl/
+.buildpath
+.project
