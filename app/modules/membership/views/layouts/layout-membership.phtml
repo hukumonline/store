@@ -31,12 +31,12 @@
     <body>
         <div id="page">
             <div class="wrapper">
-                <div id="judul"><a href="<?=KUTU_ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
+                <div id="judul"><a href="<?=ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
                 <div class="align-left">
                 <small>.:Hukumonline-ID</small>
                 </div>
                 <div class="align-right">
-                    <a href="<?=KUTU_ROOT_URL;?>">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
+                    <a href="<?=ROOT_URL;?>">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
                 </div>
                 <div class="clear">&nbsp;</div>
                 <hr>
@@ -57,7 +57,7 @@
 								$sReturn = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 								$sReturn = base64_encode($sReturn);
                                 ?>
-                                <a href="<?=KUTU_ROOT_URL;?>/identity/logout/<?=$sReturn;?>">&raquo;&nbsp;Log Out</a>
+                                <a href="<?=ROOT_URL;?>/identity/logout/<?=$sReturn;?>">&raquo;&nbsp;Log Out</a>
                                 </div>
                             </div>
                             <div style="padding-top:5px;"></div>
@@ -79,14 +79,14 @@
                                         </li>
                                         <li>
                                             <h6><abbr>Laporan</abbr></h6>
-                                            <a href="<?=KUTU_ROOT_URL;?>/store/payment/list">Sejarah Pesanan</a><br>
-                                            <a href="<?=KUTU_ROOT_URL;?>/store/payment/transaction">Sejarah Transaksi</a><br>
-                                            <a href="<?=KUTU_ROOT_URL;?>/store/payment/confirm">Konfirmasi Pembayaran</a><br>
-                                            <a href="<?=KUTU_ROOT_URL;?>/store/payment/billing">Ubah Informasi Tagihan</a>
+                                            <a href="<?=ROOT_URL;?>/store/payment/list">Sejarah Pesanan</a><br>
+                                            <a href="<?=ROOT_URL;?>/store/payment/transaction">Sejarah Transaksi</a><br>
+                                            <a href="<?=ROOT_URL;?>/store/payment/confirm">Konfirmasi Pembayaran</a><br>
+                                            <a href="<?=ROOT_URL;?>/store/payment/billing">Ubah Informasi Tagihan</a>
                                         </li>
                                         <li>
                                             <h6><abbr>Dokumen Ku</abbr></h6>
-                                            <a href="<?=KUTU_ROOT_URL;?>/store/payment/document">Lihat Semua</a>
+                                            <a href="<?=ROOT_URL;?>/store/payment/document">Lihat Semua</a>
                                         </li>
                                         <li>
                                             <h6><abbr>Berlangganan</abbr></h6>

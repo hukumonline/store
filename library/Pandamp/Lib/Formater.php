@@ -52,5 +52,68 @@ class Pandamp_Lib_Formater
         }
         return $ip;
     }
+	/**
+	 * he syntax is DateAdd (interval,number,date).
+	 * The interval is a string expression that defines the interval you want to add. 
+	 * For example minutes or days, 
+	 * the number is the number of that interval that you wish to add, and the date is the date.
+	 * Interval can be one of:
+	 * @params yyyy	year
+	 * @params q	Quarter
+	 * @params m	Month
+	 * @params y	Day of year
+	 * @params d	Day
+	 * @params w	Weekday
+	 * @params ww	Week of year
+	 * @params h	Hour
+	 * @params n	Minute
+	 * @params s	Second
+	 * As far as I can tell, w,y and d do the same thing, 
+	 * that is add 1 day to the current date, q adds 3 months and ww adds 7 days. 
+	 *
+	 */
+		
+	static function DateAdd($interval, $number, $date) {
+	
+	    $date_time_array = getdate($date);
+	    $hours = $date_time_array['hours'];
+	    $minutes = $date_time_array['minutes'];
+	    $seconds = $date_time_array['seconds'];
+	    $month = $date_time_array['mon'];
+	    $day = $date_time_array['mday'];
+	    $year = $date_time_array['year'];
+	
+	    switch ($interval) {
+	    
+	        case 'yyyy':
+	            $year+=$number;
+	            break;
+	        case 'q':
+	            $year+=($number*3);
+	            break;
+	        case 'm':
+	            $month+=$number;
+	            break;
+	        case 'y':
+	        case 'd':
+	        case 'w':
+	            $day+=$number;
+	            break;
+	        case 'ww':
+	            $day+=($number*7);
+	            break;
+	        case 'h':
+	            $hours+=$number;
+	            break;
+	        case 'n':
+	            $minutes+=$number;
+	            break;
+	        case 's':
+	            $seconds+=$number;
+	            break;            
+	    }
+	    $timestamp= mktime($hours,$minutes,$seconds,$month,$day,$year);
+	    return $timestamp;
+	}	
 	
 }

@@ -20,19 +20,18 @@ class Membership_PaymentController extends Zend_Controller_Action
 			
 			$loginUrl = $config->identity->config->local->login->url;
 						
-			$this->_redirect(KUTU_ROOT_URL.$loginUrl.'?returnTo='.$sReturn);
+			$this->_redirect(ROOT_URL.$loginUrl.'?returnTo='.$sReturn);
 		}
 		else 
 		{
 	        $this->_testMode=true;
 			$this->_defaultCurrency='USD';
-			$tblPaymentSetting = new Kutu_Core_Orm_Table_PaymentSetting();
+			$tblPaymentSetting = new App_Model_Db_Table_PaymentSetting();
 			$usdIdrEx = $tblPaymentSetting->fetchAll($tblPaymentSetting->select()->where(" settingKey= 'USDIDR'"));
 			$this->_currencyValue = $usdIdrEx[0]->settingValue;
 			
-			$this->view->addHelperPath(KUTU_ROOT_DIR.'/library/Kutu/View/Helper','Kutu_View_Helper');
 			$this->_helper->layout->setLayout('layout-membership');
-			$this->_helper->layout->setLayoutPath(array('layoutPath'=>KUTU_ROOT_DIR.'/application/modules/membership/views/layouts'));
+			$this->_helper->layout->setLayoutPath(array('layoutPath'=>ROOT_DIR.'/app/modules/membership/views/layouts'));
 					
 			Zend_Session::start();
 
@@ -41,7 +40,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 	}
 	function completeAction()
 	{
-		$formater 	= new Kutu_Core_Hol_User();
+		$formater 	= new Pandamp_Core_Hol_User();
 		
 		$defaultCurrency = 'Rp';
 		
@@ -50,13 +49,13 @@ class Membership_PaymentController extends Zend_Controller_Action
 		$packageId = $this->_request->getParam('packageId');
 		$paymentSubscription = $this->_request->getParam('payment');
 		
-		$tblPaymentSetting = new Kutu_Core_Orm_Table_PaymentSetting();
+		$tblPaymentSetting = new App_Model_Db_Table_PaymentSetting();
 		$usdIdrEx = $tblPaymentSetting->fetchRow(" settingKey= 'USDIDR'");
 		$currencyValue = $usdIdrEx->settingValue;      
         $rowTaxRate = $tblPaymentSetting->fetchRow("settingKey='taxRate'");
 		$taxRate = $rowTaxRate->settingValue;
 		
-		$tblUser = new Kutu_Core_Orm_Table_User();
+		$tblUser = new App_Model_Db_Table_User();
 		$rowUser = $tblUser->find($kopel)->current();
 		
 		/*
@@ -74,12 +73,12 @@ class Membership_PaymentController extends Zend_Controller_Action
 		$disc = $formater->checkPromoValidation('Disc',$packageId,$rowUser->promotionId,$paymentSubscription);
 		$total = $formater->checkPromoValidation('Total',$packageId,$rowUser->promotionId,$paymentSubscription);
 		
-		$tblPackage = new Kutu_Core_Orm_Table_Package();
+		$tblPackage = new App_Model_Db_Table_Package();
 		$rowPackage = $tblPackage->fetchRow("packageId=$packageId");
 		
 		$this->view->rowPackage = $rowPackage;
 		
-		$tblOrder=new Kutu_Core_Orm_Table_Order();
+		$tblOrder=new App_Model_Db_Table_Order();
         $row=$tblOrder->fetchNew();
 		
 		$row->userId=$kopel;
@@ -111,7 +110,7 @@ class Membership_PaymentController extends Zend_Controller_Action
         $row->currencyValue = $currencyValue;    
 
         $row->orderTotal=$total;
-        $row->ipAddress= Kutu_Lib_Formater::getRealIpAddr();
+        $row->ipAddress= Pandamp_Lib_Formater::getRealIpAddr();
         
         $orderId = $row->save();
         
@@ -119,7 +118,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 		$rowJustInserted->invoiceNumber = date('Ymd') . '.' . $orderId;
 		
 		$temptime = time();
-		$temptime = Kutu_Lib_Formater::DateAdd('d',5,$temptime);
+		$temptime = Pandamp_Lib_Formater::DateAdd('d',5,$temptime);
 			
 		$rowJustInserted->discount = $disc;
 		$rowJustInserted->invoiceExpirationDate = strftime('%Y-%m-%d',$temptime);
@@ -129,13 +128,13 @@ class Membership_PaymentController extends Zend_Controller_Action
 		$this->view->invoiceNumber = $rowJustInserted->invoiceNumber;
 		$this->view->datePurchased = $rowJustInserted->datePurchased;
         
-		$tblOrderDetail=new Kutu_Core_Orm_Table_OrderDetail();
+		$tblOrderDetail=new App_Model_Db_Table_OrderDetail();
 		$rowDetail=$tblOrderDetail->fetchNew();
 		
 		$rowDetail->orderId=$orderId;
 		$rowDetail->itemId=$rowPackage->packageId;
 
-    	$modelGroup = new Kutu_Core_Orm_Table_Group();
+    	$modelGroup = new App_Model_Db_Table_Group();
     	$row = $modelGroup->fetchRow("id=$packageId");
 
 		$group = "Subsciption for Member ".ucwords(strtolower($row->name))." ".$paymentSubscription." Months";
@@ -183,7 +182,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 	}
 	function processAction()
 	{
-		$formater 	= new Kutu_Core_Hol_User();
+		$formater 	= new Pandamp_Core_Hol_User();
 		
 		$orderId = $this->_request->getParam('orderId');
 		$packageId = $this->_request->getParam('packageId');
@@ -196,7 +195,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 			die();
 		}
 		
-		include_once(KUTU_ROOT_DIR.'/application/models/Store.php');
+		include_once(ROOT_DIR.'/app/models/Store.php');
 		$modelAppStore = new App_Model_Store();
 		if($modelAppStore->isOrderPaid($orderId))
 		{
@@ -205,7 +204,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 			die();
 		}
 		
-		$tblOrder = new Kutu_Core_Orm_Table_Order();
+		$tblOrder = new App_Model_Db_Table_Order();
 		$items = $tblOrder->getOrderDetail($orderId);
 		
 		$tmpMethod = $this->_request->getParam('method');
@@ -214,7 +213,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 			$items[0]['paymentMethod'] = $tmpMethod;
 		}
 		
-		$tblUser = new Kutu_Core_Orm_Table_User();
+		$tblUser = new App_Model_Db_Table_User();
 		$rowUser = $tblUser->find($items[0]['userId'])->current();
 		
 		$total = $formater->checkPromoValidation('Total',$packageId,$rowUser->promotionId,$paymentSubscription);
@@ -286,7 +285,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 		}
 	}
 	protected function updateInvoiceMethod($orderId, $payMethod, $status, $notify, $note){        
-        $tblOrder = new Kutu_Core_Orm_Table_Order();
+        $tblOrder = new App_Model_Db_Table_Order();
 		
 		$rows = $tblOrder->find($orderId)->current();
 		$row = array();
@@ -309,7 +308,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 		
 		$tblOrder->update($row, 'orderId = '. $orderId);
 		
-		$tblHistory = new Kutu_Core_Orm_Table_OrderHistory();
+		$tblHistory = new App_Model_Db_Table_OrderHistory();
 		$rowHistory = $tblHistory->fetchNew();
 		
 		$rowHistory->orderId = $orderId;
@@ -325,7 +324,7 @@ class Membership_PaymentController extends Zend_Controller_Action
 		
 		$orderId = $this->_request->getParam('orderId');
 		
-		$tblOrder = new Kutu_Core_Orm_Table_Order();
+		$tblOrder = new App_Model_Db_Table_Order();
 		$row = $tblOrder->find($orderId)->current();
 		if(empty($row))
 			die('NO ORDER DATA AVAILABLE');
