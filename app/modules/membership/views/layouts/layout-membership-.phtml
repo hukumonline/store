@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>hukumonline.com Identity</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+	<link rel="shortcut icon" href="<?=$this->baseUrl;?>/resources/images/hole_small.ico" />
+	<script type="text/javascript" src="<?=$this->baseUrl; ?>/js/jquery/jquery-1.2.3.pack.js"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="<?=$this->baseUrl;?>/resources/css/elastic.css" />
+	<script src="<?=$this->baseUrl;?>/resources/css/elastic.js" type="text/javascript" language="javascript" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" media="screen" href="<?=$this->baseUrl;?>/resources/css/typography.css" />
+</head>
+<body>
+	<div class="unit horizontal-center layout">
+		<div class="container" style="padding-top:15px;">
+			<img src="<?=$this->cdn('images'); ?>/holid.jpg" alt="mnutopshadow" />
+			<div style="font-size:10px;padding-top:2px;border-bottom:1px solid #ddd;">Buat Akun HukumonlineID</div>
+			<div style="float:right;font-size:12px;">
+				<a href="<?=$this->getKutuRootUrl();?>">Awal</a> | <a href="<?=$this->baseUrl;?>/identity/daftar">Daftar</a>
+			</div>
+			<div style="clear:both;"></div>
+			<div style="padding-top:10px;"></div>
+			<?=$this->layout()->content;?>
+		</div>
+	</div>
+	<div id="ft">	
+	<div class="unit">
+		<div class="container footer">
+		<a href="<?=$this->baseUrl;?>/identity/feedback">Feedback</a> | <a href="http://hukumonline.blogspot.com/">Blog</a> | Copyright &copy; 2008 Hukumonline		
+		</div>
+	</div>
+	</div>
+</body>
+</html>

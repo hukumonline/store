@@ -1,0 +1,55 @@
+<div id="judul"><a href="<?=KUTU_ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
+<div class="align-left">
+<small>.:Hukumonline-ID</small>
+</div>
+<div class="align-right">
+    <a href="<?=KUTU_ROOT_URL;?>">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
+</div>
+<div class="clear">&nbsp;</div>
+<hr>
+<section class="column first">
+    <div class="colgroup leading">
+        <div class="column width6 first">
+            <h3>Selamat Datang di Hukumonline, <a href="#"><?=$this->username;?></a></h3>
+            <? if ($this->packageId == 32) { ?>
+            <p>Saat ini anda terdaftar sebagai anggota <b>Gratis</b>.<br /><a href="<?=KUTU_ROOT_URL;?>/identity/upgrade">Perbaharui sekarang?</a></p>
+            <? } else { ?>
+            <p>Saat ini anda terdaftar sebagai anggota <b><?=$this->getGroupName($this->packageId);?><b>.<br />
+            <a href="<?=KUTU_ROOT_URL;?>/identity/upgradesub/packageId/19">Bayar</a></p>
+            <? } ?>
+        </div>
+        <div class="column width2" style="padding-top:10px">
+            <div class="corner-tl corner-tr corner-bl corner-br" style="border:1px solid #cecece;">
+                <div class="ta-left" style="padding: 5px;">
+
+                    <?
+                    $auth = Zend_Auth::getInstance();
+                    if ($auth->hasIdentity()) {
+                    ?>
+                    <span class="label label-blue"><?=$auth->getIdentity()->username;?></span>&nbsp;Anda sudah login..
+                    <h5>Informasi Akun Anda.</h5>
+                    HukumonlineID.<br/>
+                    <a href="<?=$this->baseUrl();?>/profile" title="Profile"><span class="label label-green">Profile</span></a>
+                    <div style="padding-top:5px;"></div>
+                    <a href="<?=$this->baseUrl();?>/identity/logout/<?=$this->return;?>" title="Logout"><span class="label label-purple">Logout</span></a>
+                    <? } else { ?>
+                    <a href="<?=KUTU_ROOT_URL;?>" title="Login"><span class="label label-blue">Masuk</span></a>
+                    <h5>Tidak punya Hukumonline! ID?</h5>
+                    Pendaftarannya mudah.
+                    <ul>
+                        <li><a href="<?=$this->baseUrl();?>/identity/daftar" title="Sign Up"><span class="label label-green">Daftar</span></a></li>
+                    </ul>
+                    <? } ?>
+
+                </div>
+            </div>
+            <div style="padding-top:5px"></div>
+            <div class="corner-tl corner-tr corner-bl corner-br" style="border:1px solid #cecece;">
+                <div class="ta-left" style="padding:10px;">
+                    <abbr>Satu Hukumonline!ID</abbr>
+                    Gunakan ID anda untuk Hukumonline Indonesia, Hukumonline English, Hukumpedia dan Forum.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

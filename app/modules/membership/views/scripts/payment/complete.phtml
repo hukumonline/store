@@ -1,0 +1,67 @@
+<fieldset>
+<legend>PESANAN ANDA TELAH SELESAI</legend>
+<h5>Transaksi #<?=$this->invoiceNumber;?>&nbsp;&ndash;&nbsp;Tunda</h5>
+<p>
+    Tentang Order Ini:<br/>
+    <ul>
+        <li>INFORMASI PERBAHARUI KEANGGOTAAN</li>
+    </ul>
+</p>
+<p>
+    Tanggal Order: <?=Kutu_Lib_Formater::get_date($this->datePurchased);?><br/>
+    Metode Pembayaran: <?=$this->data['method'];?>
+</p>
+<h4>DETAIL PESANAN</h4>
+<table cellspacing="0" border="0" cellpadding="0" id="shopping-cart-table" class="data-table box-table shopping-cart">
+<thead>
+    <tr>
+        <th rowspan="1" class="ta-left" style="padding-left:23px;">Deskripsi</th>
+        <th class="ta-center last" colspan="1">Harga</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td>
+        <div class="title"><?=$this->itemName;?></div>
+    </td>
+    <td class="ta-right last">
+            <span class="price">Rp. <?=number_format($this->total,2);?></span>
+    </td>
+</tr>
+</tbody>
+</table>                        
+
+    <table style="border: 1px solid rgb(202, 202, 202); border-width: 0pt 1px 1px; border-style: none solid solid; border-color: -moz-use-text-color rgb(202, 202, 202) rgb(202, 202, 202); width:100%;">
+        <tbody>
+            <tr>
+                <td colspan="2" style="height:10px;"></td>
+            </tr>
+            <tr>
+                <td colspan="2" valign="top" style="width:100%;">
+                    <div class="shopping-cart-totals">
+                        <table id="shopping-cart-totals-table">
+                            <tfoot>
+                                <tr class="grand-total">
+                                    <td style="color: rgb(68, 68, 68); text-transform: uppercase;" colspan="2" align="right" valign="middle"><strong>Total (harga + diskon + PPN 10%)</strong></td>
+                                    <td>:</td>
+                                    <td class="ta-right">
+                                        <strong>Rp. <?=number_format($this->grandtotal,2);?></strong>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+	<div style="padding-top:15px;"></div>
+	
+	<form method="get" action="<?=KUTU_ROOT_URL;?>/membership/payment/process/orderId/<?=$this->orderId;?>">
+		<input type="hidden" name="packageId" value="<?=$this->packageId;?>" />
+		<input type="hidden" name="paymentSubscription" value="<?=$this->paymentSubscription;?>" />
+		<input type="submit" class="form-button" value="Lanjutkan dengan Pembayaran" />
+	</form>
+
+</fieldset>

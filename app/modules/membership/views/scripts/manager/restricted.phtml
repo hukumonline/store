@@ -1,0 +1,39 @@
+<div id="judul"><a href="<?=KUTU_ROOT_URL;?>"><img src="<?=$this->cdn('images');?>/holid.jpg" alt="hukumonline" /></a></div>
+<div class="align-left">
+<small>.:Hukumonline-ID</small>
+</div>
+<div class="align-right">
+    <a href="<?=KUTU_ROOT_URL;?>">hukumonline.com</a> | <a href="http://en.hukumonline.com">en.hukumonline.com</a> | <a href="http://hukumpedia.com">hukumpedia.com</a> | <a href="http://forum.hukumonline.com">forum.hukumonline.com</a>
+</div>
+<div class="clear">&nbsp;</div>
+<hr>
+<section class="column first">
+    <div class="colgroup leading">
+        <div class="column width6 first">
+            <h3><span class="icon icon-cancel">&nbsp;</span>Error...</h3>
+            <div class="box box-error">
+                <?= $this->error_msg; ?>
+            </div>
+        </div>
+        <div class="column width2" style="padding-top:10px">
+            <div class="corner-tl corner-tr corner-bl corner-br" style="border:1px solid #cecece;">
+                <div class="ta-left" style="padding: 5px;">
+
+                    <h5>Don't have a Hukumonline! ID?</h5>
+                    Signing up is easy.
+                    <ul>
+                        <li><a href="<?=$this->baseUrl();?>/identity/daftar" title="Daftar"><span class="label label-green">Daftar</span></a></li>
+                    </ul>
+
+                </div>
+            </div>
+            <div style="padding-top:5px"></div>
+            <div class="corner-tl corner-tr corner-bl corner-br" style="border:1px solid #cecece;">
+                <div class="ta-left" style="padding:10px;">
+                    <abbr>One Hukumonline!ID</abbr>
+                    Use your single ID for Hukumonline Indonesia, Hukumonline English, Hukumpedia dan Forum.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
