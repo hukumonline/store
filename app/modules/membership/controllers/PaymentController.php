@@ -204,8 +204,8 @@ class Membership_PaymentController extends Zend_Controller_Action
 			die();
 		}
 		
-		$tblOrder = new App_Model_Db_Table_Order();
-		$items = $tblOrder->getOrderDetail($orderId);
+		//$tblOrder = new App_Model_Db_Table_Order();
+		$items = App_Model_Show_Order::show()->getOrderDetail($orderId);
 		
 		$tmpMethod = $this->_request->getParam('method');
 		if(!empty($tmpMethod))
