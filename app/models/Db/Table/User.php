@@ -15,4 +15,20 @@ class App_Model_Db_Table_User extends Zend_Db_Table_Abstract
 
         parent::_setupDatabaseAdapter();
     }
+    public function getUserCount($guid)
+    {
+        if ($guid == "") {
+            return 0;
+        }
+
+        $select = $this->select()
+                  ->from($this, array(
+                    'COUNT(kopel) as count_id'
+                  ))
+                  ->where('kopel = ?', $guid);
+
+        $row = $this->fetchRow($select);
+
+        return ($row !== null) ? $row->count_id : 0;
+    }
 }
