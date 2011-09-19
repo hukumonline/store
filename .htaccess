@@ -41,7 +41,7 @@
     </IfModule>
 </FilesMatch>
 
-#SetEnv APPLICATION_ENV development
+SetEnv APPLICATION_ENV development
 
 RewriteEngine On
 

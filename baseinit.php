@@ -24,7 +24,7 @@ define("TITLE_CHAR_LIMIT", 37);
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV',
               (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV')
-                                         : 'production'));
+                                         : 'testing'));
 
 // Include path
 set_include_path(LIB_PATH . PATH_SEPARATOR . ROOT_PATH.'/library/Phpids/lib' . PATH_SEPARATOR . get_include_path());

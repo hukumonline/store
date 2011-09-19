@@ -245,4 +245,164 @@ class Shop_StoreController extends Zend_Controller_Action
         return $orderId;
 
     }
+    function printpdfinvoiceAction()
+    {
+        $orderId = $this->_getParam('orderId');
+
+        $this->_helper->layout->disableLayout();
+
+        $items = App_Model_Show_Order::show()->getOrderDetail($orderId);
+        
+        // create new PDF document
+        $pdf = new Pandamp_Lib_Pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        define ("PDF_HEADER_TITLE", "PT. Justika Siar Publika");
+        define ("PDF_HEADER_STRING", "Puri Imperium Office Plaza, Jl. Kuningan Madya Kav 5-6 Kuningan Jakarta 12980,\nTelepon: (62-21) 83701827 / Faksimili: (62-21) 83701826\nE-mail: layanan@hukumonline.com");
+
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Nihki Prihadi');
+        $pdf->SetTitle('TCPDF Example');
+        $pdf->SetSubject('TCPDF Tutorial');
+        $pdf->SetKeywords('TCPDF, PDF, example, tutorial');
+
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+        // set header and footer fonts
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+        // set default monospaced font
+        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+        //set margins
+        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        //set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+        //set image scale factor
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        //set some language-dependent strings
+        //$pdf->setLanguageArray($l);
+
+        // ---------------------------------------------------------
+
+        // set default font subsetting mode
+        $pdf->setFontSubsetting(true);
+
+        // Set font
+        // dejavusans is a UTF-8 Unicode font, if you only need to
+        // print standard ASCII chars, you can use core fonts like
+        // helvetica or times to reduce file size.
+        $pdf->SetFont('dejavusans', '', 10, '', true);
+
+
+        // add a page
+        $pdf->AddPage();
+
+        // create address box
+        $pdf->CreateTextBox('Kepada Yth,', 0, 25, 80, 10, 10, 'B');
+        $pdf->CreateTextBox($items[0]['taxCompany'], 0, 30, 80, 10, 10);
+
+        if ($items[0]['orderStatus'] == 3) {
+            $status = "LUNAS";
+        }
+        else
+        {
+            $status = "BELUM LUNAS";
+        }
+        $html='
+            <table>
+            <tr>
+                <td style="color:red;font-size:3em;">'.$status.'</td>
+            </tr>
+            </table>
+            ';
+                $pdf->writeHTMLCell($w=0, $h=0, 90, 30, $html, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
+
+        $pdf->CreateTextBox('ATTN: '.$this->_user->fullName, 0, 35, 80, 10, 10);
+        $pdf->CreateTextBox($items[0]['taxAddress'], 0, 40, 80, 10, 10);
+        $pdf->CreateTextBox($items[0]['taxCity'] . '-' . $items[0]['taxZip'], 0, 45, 80, 10, 10);
+
+        $modelProvince = new App_Model_Db_Table_Province();
+        $rowProvince = $modelProvince->find($items[0]['taxProvince'])->current();
+        if ($rowProvince) $pdf->CreateTextBox($rowProvince->pname, 0, 50, 80, 10, 10);
+
+        // invoice title / number
+        $pdf->CreateTextBox('Invoice #'.$items[0]['invoiceNumber'], 0, 65, 120, 20, 16);
+
+        // date, order ref
+        $pdf->CreateTextBox('Date: '.  Pandamp_Lib_Formater::get_date($items[0]['datePurchased']), 0, 75, 0, 10, 10, '', 'R');
+        $pdf->CreateTextBox('Order ref.: #'.$items[0]['orderId'], 0, 80, 0, 10, 10, '', 'R');
+
+        // list headers
+        $pdf->CreateTextBox('Quantity', 0, 95, 20, 10, 10, 'B', 'C');
+        $pdf->CreateTextBox('Product or service', 20, 95, 90, 10, 10, 'B');
+        $pdf->CreateTextBox('Price', 110, 95, 30, 10, 10, 'B', 'R');
+        $pdf->CreateTextBox('Amount', 140, 95, 30, 10, 10, 'B', 'R');
+
+        $pdf->Line(20, 105, 195, 105);
+
+        $currY = 108;
+        $total = 0;
+
+        for($iCart=0;$iCart<count($items);$iCart++) {
+                $pdf->CreateTextBox($items[$iCart]['qty'], 0, $currY, 20, 10, 10, '', 'C');
+        $html2='
+            <table>
+            <tr>
+                <td>'.$items[$iCart]['documentName'].'</td>
+            </tr>
+            </table>
+            ';
+                $pdf->writeHTMLCell(90, 10, 40, $currY, $html2, $border=0, $ln=1, $fill=0, $reseth=true, $align='', $autopadding=true);
+
+        //	$pdf->CreateTextBox($items[$iCart]['documentName'], 20, $currY, 90, 10, 10, '');
+                $pdf->CreateTextBox('Rp '.number_format($items[$iCart]['price'],0,',','.'), 110, $currY, 30, 10, 10, '', 'R');
+                $amount = $items[$iCart]['price'] * $items[$iCart]['qty'];
+                $pdf->CreateTextBox('Rp '.number_format($items[$iCart]['finalPrice'],0,',','.'), 140, $currY, 30, 10, 10, '', 'R');
+                $currY = $currY+15;
+                $total = $total+$amount;
+        }
+        $pdf->Line(195, $currY+8, 130, $currY+8);
+
+        // output the total row
+        $pdf->CreateTextBox('Sub Total ', 5, $currY+7, 135, 10, 10, 'B', 'R');
+        $pdf->CreateTextBox('Rp '.number_format($total, 2, ',', '.'), 140, $currY+7, 30, 10, 10, 'B', 'R');
+        if ($items[0]['discount'] > 0)
+        {
+            $pdf->CreateTextBox('Disc ', 5, $currY+12, 135, 10, 10, 'B', 'R');
+            $pdf->CreateTextBox($items[0]['discount'].'%', 140, $currY+12, 30, 10, 10, 'B', 'R');
+            $pdf->CreateTextBox('Grand Total ', 5, $currY+22, 135, 10, 10, 'B', 'R');
+            $grandTotal = ($result['subTotal'] - ($result['disc']/100 * $result['subTotal']));
+            $total = ($total - ($items[0]['discount']/100 * $total));
+            $pdf->CreateTextBox('Rp '.number_format($total, 2, ',', '.'), 140, $currY+22, 30, 10, 10, 'B', 'R');
+        }
+        else
+        {
+            $pdf->CreateTextBox('Grand Total ', 5, $currY+12, 135, 10, 10, 'B', 'R');
+            $pdf->CreateTextBox('Rp '.number_format($total, 2, ',', '.'), 140, $currY+12, 30, 10, 10, 'B', 'R');
+        }
+
+        // some payment instructions or information
+        $pdf->setXY(20, $currY+50);
+        $pdf->SetFont(PDF_FONT_NAME_MAIN, '', 10);
+        $ft = '
+            <b>Pembayaran lewat transfer bank</b><br/>
+            1. Bank BNI 46, Cabang Dukuh Bawah, No. 0073957339, a/n PT Justika Siar Publika<br/>
+            2. Bank BCA, Cabang Pembantu Menara Imperium, No. 221-3028-707, a/n PT Justika Siar Publika<br><br><br>
+            Jika anda sudah melakukan pembayaran, mohon konfirmasikan pembayaran anda lewat situs kami di '.ROOT_URL.'/payment/confirm atau email ke layanan@hukumonline.com<br>
+            atau fax ke (021) 8370-1826<br><br>
+            Terima kasih atas kepercayaan anda atas hukumonline.com.<br><br>
+            Salam,<br>
+            hukumonline.com
+            ';
+        $pdf->MultiCell(175, 10, $ft, 0, 'L', 0, 1, '', '', true, null, true);
+
+        //Close and output PDF document
+        $pdf->Output('Hukumonline_EStore_Report.pdf', 'I');
+    }
 }
