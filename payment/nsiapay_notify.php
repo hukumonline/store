@@ -21,7 +21,7 @@ $rowOrder = $tblOrder->fetchRow("invoiceNumber='".$transidmerchant."' AND orderS
 
 $datenow = date('YmdHis');
 
-if ($_SERVER['REMOTE_ADDR'] == "203.190.41.220") {
+//if ($_SERVER['REMOTE_ADDR'] == '202.182.62.118') {
 	
 	if ($rowOrder > 0) {
 		
@@ -63,13 +63,13 @@ if ($_SERVER['REMOTE_ADDR'] == "203.190.41.220") {
 		
 	echo $response;
 		
-}
-else
-{
-	$rowOrder->orderStatus = 7;
-	$rowOrder->datePurchased = $datenow;
-		
-	$rowOrder->save();
-		
-	echo "Continue";
-}
+//}
+//else
+//{
+//	$rowOrder->orderStatus = 7;
+//	$rowOrder->datePurchased = $datenow;
+//		
+//	$rowOrder->save();
+//		
+//	echo "Continue";
+//}
