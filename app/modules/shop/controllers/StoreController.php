@@ -128,7 +128,7 @@ class Shop_StoreController extends Zend_Controller_Action
         $payment = $this->_request->getParam('payment');
         $orderId = $this->saveOrder($result, $payment);
 
-//        $cart = null;
+        $cart = null;
 
         $data = $this->_request->getParams();
 
@@ -146,7 +146,7 @@ class Shop_StoreController extends Zend_Controller_Action
                 $mod->sendBankInvoiceToUser($orderId);
                 break;
             case 'nsiapay':
-//                $mod->sendInvoiceToUser($orderId);
+                $mod->sendInvoiceToUser($orderId);
                 break;
             case 'postpaid':
                 
