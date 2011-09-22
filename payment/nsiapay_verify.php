@@ -1,7 +1,7 @@
 <?php 
 error_reporting(E_ALL|E_STRICT);
 require_once "../baseinit.php";
-//set_include_path(ROOT_DIR.'/library' . PATH_SEPARATOR . get_include_path());
+
 
 Pandamp_Application::getResource('session');
 Pandamp_Application::getResource('multidb')->getDb('db1');
@@ -11,6 +11,7 @@ Pandamp_Application::getResource('multidb')->getDb('db1');
 $transidmerchant = $_GET['TRANSIDMERCHANT'];
 $currency = $_GET['CURRENCY'];
 
+require_once(ROOT_DIR.'/app/models/Db/Table/Order.php');
 $tblOrder = new App_Model_Db_Table_Order();
 $rowOrder = $tblOrder->fetchRow("invoiceNumber='".$transidmerchant."'");
 
