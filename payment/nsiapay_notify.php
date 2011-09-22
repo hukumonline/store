@@ -43,7 +43,7 @@ $datenow = date('YmdHis');
 			$tblNsiapay->update($data,"transidmerchant='".$transidmerchant."'");
 			
 			$tblNhis = new App_Model_Db_Table_NsiapayHistory();
-			$tblNhis->insert(array('orderId'=>$rowOrder->orderId,'paymentStatus'=>'notify','dateAdded'=>date('YmdHis')));
+			$tblNhis->insert(array('nsiaId'=>$rowOrder->orderId,'paymentStatus'=>'notify','dateAdded'=>date('YmdHis')));
 		
 			$response = "Continue";
 		}

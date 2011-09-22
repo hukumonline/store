@@ -40,7 +40,7 @@ $datenow = date('YmdHis');
 		$tblNsiapay->update(array('status'=>'paid','finishtime'=>date('YmdHis')),"transidmerchant='".$transidmerchant."'");
 		
 		$tblNhis = new App_Model_Db_Table_NsiapayHistory();
-		$tblNhis->insert(array('orderId'=>$rowOrder->orderId,'paymentStatus'=>'paid','dateAdded'=>date('YmdHis')));
+		$tblNhis->insert(array('nsiaId'=>$rowOrder->orderId,'paymentStatus'=>'paid','dateAdded'=>date('YmdHis')));
 		
 		
 		$redirect_url = _MERCHANTWEB."?status_code=".$status_code."&order_number=".$transidmerchant;
