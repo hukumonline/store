@@ -12,6 +12,10 @@ $transidmerchant = $_GET['TRANSIDMERCHANT'];
 $currency = $_GET['CURRENCY'];
 
 require_once(ROOT_DIR.'/app/models/Db/Table/Order.php');
+require_once(ROOT_DIR.'/app/models/Db/Table/Nsiapay.php');
+require_once(ROOT_DIR.'/app/models/Db/Table/NsiapayHistory.php');
+
+
 $tblOrder = new App_Model_Db_Table_Order();
 $rowOrder = $tblOrder->fetchRow("invoiceNumber='".$transidmerchant."'");
 

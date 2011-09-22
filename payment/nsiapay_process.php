@@ -13,6 +13,11 @@ $transidmerchant = $_GET['TRANSIDMERCHANT'];
 $totalamount = $_GET['AMOUNT'];
 $status_code = $_GET['STATUSCODE'];
 
+require_once ROOT_DIR.'/app/models/Db/Table/Order.php';
+require_once ROOT_DIR.'/app/models/Db/Table/Row/Order.php';
+require_once(ROOT_DIR.'/app/models/Db/Table/Nsiapay.php');
+require_once(ROOT_DIR.'/app/models/Db/Table/NsiapayHistory.php');
+
 $tblOrder = new App_Model_Db_Table_Order();
 $rowOrder = $tblOrder->fetchRow("invoiceNumber='".$transidmerchant."' AND orderStatus=1");
 
