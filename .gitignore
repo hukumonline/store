@@ -1,7 +1,7 @@
 .settings/
 app/configs/
 data/
-library/Kutu/View/Helper/Cdn.php
+library/Pandamp/Controller/Action/Helper/Cdn.php
 library/Phpids/
 library/adodb/
 library/phpgacl/
