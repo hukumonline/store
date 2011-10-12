@@ -8,7 +8,8 @@ class Nsiapay extends PaymentGateway
 	{
 		parent::__construct();
 		
-		$this->gatewayUrl = 'https://www.nsiapay.com/ipg_payment/RegisterOrderInfo';
+		//$this->gatewayUrl = 'https://www.nsiapay.com/ipg_payment/RegisterOrderInfo';
+		$this->gatewayUrl = 'https://pay.doku.com/ipg_payment/RegisterOrderInfo';
 		$this->ipnLogFile = 'nsiapay.ipn_results.log';
 	}
     public function enableTestMode()

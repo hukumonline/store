@@ -12,7 +12,8 @@ class Shop_PaymentController extends Zend_Controller_Action
 		
 		$this->_helper->layout->setLayout('layout-store-payment');
 		
-		$this->_testMode=true;
+		$this->_testMode=false;
+		//$this->_testMode=true;
 	}
 	function processAction()
 	{
@@ -69,7 +70,8 @@ class Shop_PaymentController extends Zend_Controller_Action
                 
                 $ca = implode(";", $basket);
                 
-                $merchantId = "000100090000028";
+                //$merchantId = "000100090000028";   development
+                $merchantId = "000100013001060";
                 
                 $paymentObject->addField("BASKET",$ca);
                 $paymentObject->addField("MERCHANTID",$merchantId);
@@ -81,7 +83,8 @@ class Shop_PaymentController extends Zend_Controller_Action
                 $paymentObject->addField("acquirerBIN","360");
                 $paymentObject->addField("password","123456");
                 $paymentObject->addField("URL",ROOT_URL);
-                $paymentObject->addField("MALLID","199");
+                //$paymentObject->addField("MALLID","199");   development
+                $paymentObject->addField("MALLID","332");
                 $paymentObject->addField("SESSIONID",Zend_Session::getId());
                 $sha1 = sha1($subTotal.".00".$merchantId."08iIWbWvO16w".$items[0]['invoiceNumber']);
 //                echo $subTotal.".00".$merchantId."08iIWbWvO16w".$items[0]['invoiceNumber']."<br>";
