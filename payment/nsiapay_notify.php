@@ -26,7 +26,7 @@ $datenow = date('YmdHis');
 //if ($_SERVER['REMOTE_ADDR'] == '202.182.62.118') {
 	
 	//if ($rowOrder > 0) {
-	if (isset($rowOrder)) {
+	if ($rowOrder) {
 		
 		if ($result == "SUCCESS") {
 			//$rowOrder->orderStatus = 14;
